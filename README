@@ -1,0 +1,34 @@
+= Facebook Signed Request Plugin for Rails
+
+The Facebook Signed Request Plugin provides Apps on Facebook.com Authorization.
+
+http://developers.facebook.com/docs/guides/canvas/
+
+== Install
+
+rails plugin install git@github.com:leno-ig/facebook_signed_request.git
+
+== Usage
+
+class YourFacebookController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :only=>%w(canvas)
+  
+  before_filter :only=>%w(canvas) do |ctrl|
+    @facebook_signed_request = FacebookSignedRequest.new(
+      params[:signed_request], 
+      "YOUR_APP_SECRET", 
+      "YOUR_APP_ID", 
+      "YOUR_CANVAS_PAGE")
+      
+    unless @facebook_signed_request && @facebook_signed_request.params && @facebook_signed_request.params.key?("user_id")
+      render :template => "/facebook_signed_request/oauth",:layout=>false
+      return false
+    end
+  end
+  
+  def canvas
+    #do something
+  end
+end
+
+released under the MIT license
